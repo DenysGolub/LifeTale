@@ -7,11 +7,12 @@ public class ChangeScene : MonoBehaviour
     public GameObject FromLocation;
     public Vector3 PlayerToPosition;
     public GameObject Player;
+    public bool isFading = true;
 
-    public GameObject FadeInTrans;  // затемнення (чорний екран)
-    public GameObject FadeOutTrans; // засвітлення (повернення до нормального)
+    public GameObject FadeInTrans; 
+    public GameObject FadeOutTrans; 
 
-    public float FadeDuration = 1f; // скільки триває анімація
+    public float FadeDuration = 1f; 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -20,26 +21,29 @@ public class ChangeScene : MonoBehaviour
 
     private IEnumerator HandleSceneChange()
     {
-        // 1. Почати fade-in
-        FadeInTrans.SetActive(true);
+        if(isFading)
+        {
+            FadeInTrans.SetActive(true);
 
-        // 2. Почекати, поки анімація відбудеться
-        yield return new WaitForSeconds(FadeDuration);
+            yield return new WaitForSeconds(FadeDuration);
 
-        // 3. Переключити локації
-        ToLocation.SetActive(true);
-        FromLocation.SetActive(false);
+            ToLocation.SetActive(true);
+            FromLocation.SetActive(false);
 
-        Player.transform.position = PlayerToPosition;
+            Player.transform.localPosition = PlayerToPosition;
 
-        // 4. Почати fade-out
-        FadeInTrans.SetActive(false);
-        FadeOutTrans.SetActive(true);
+            FadeInTrans.SetActive(false);
+            FadeOutTrans.SetActive(true);
 
-        // 5. Можна дочекатися fade-out, якщо хочеш
-        yield return new WaitForSeconds(FadeDuration);
+            yield return new WaitForSeconds(FadeDuration);
 
-        // 6. Вимкнути fade об'єкти
-        FadeOutTrans.SetActive(false);
+            FadeOutTrans.SetActive(false);
+        }
+        else
+        {
+            ToLocation.SetActive(true);
+            Player.transform.localPosition = PlayerToPosition;
+        }
+
     }
 }
